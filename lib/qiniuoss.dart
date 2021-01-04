@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -9,7 +8,8 @@ class Qiniuoss {
   static const MethodChannel _methodChannel =
       const MethodChannel('qiniuoss_method');
 
-  static const EventChannel _eventChannel = const EventChannel('qiniuoss_event');
+  static const EventChannel _eventChannel =
+      const EventChannel('qiniuoss_event');
 
   Stream _onProgressChanged;
 

@@ -7,9 +7,11 @@
  * @FilePath: /tejia_user/plugins/qiniuoss/example/lib/main.dart
  */
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:qiniuoss/qiniuoss.dart';
+import 'package:qiniuoss/file_path_entity.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,32 +23,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String token;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-//      platformVersion = await Qiniuoss.platformVersion;
-
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      String _token = await getUploadToken();
+      setState(() {
+        token = _token;
+      });
     });
   }
 
@@ -55,12 +41,51 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('七牛存储示例'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: [
+            FlatButton(
+              child: Text('单文件上传'),
+              color: Colors.blue,
+              onPressed: () {
+                Qiniuoss qiniu = Qiniuoss();
+                qiniu.onProgressChanged().listen((percent) {
+                  // 上传进度
+                  debugPrint("$percent");
+                });
+                qiniu.uploadFile("xxx/xxx/hello.txt", "hello.txt", token);
+              },
+            ),
+            FlatButton(
+              child: Text('多文件上传'),
+              color: Colors.blue,
+              onPressed: () {
+                Qiniuoss qiniu = Qiniuoss();
+                List<FilePathEntity> entities = [];
+                FilePathEntity entity1 = FilePathEntity(
+                    filePath: "/xxxxxx/xxx1.jpg",
+                    key: "xxx1.jpg",
+                    token: token);
+                FilePathEntity entity2 = FilePathEntity(
+                    filePath: "/xxxxxx/xxx2.jpg",
+                    key: "xxx2.jpg",
+                    token: token);
+                entities.add(entity1);
+                entities.add(entity2);
+                qiniu.uploadFiles(entities);
+              },
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<String> getUploadToken() async {
+    //这里一般访问网络接口，从服务器返回上传所需的token
+    return Future.delayed(Duration(seconds: 1), () {
+      return "token123456";
+    });
   }
 }

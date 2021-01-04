@@ -1,15 +1,19 @@
 # qiniuoss
 
-A new flutter plugin project.
+A flutter plugin of Qiniu storage.
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+上传所需要的Token由服务器获取，然后再上传文件。
+可上传一个文件或多个文件。
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+单文件上传：
+```
+Future<String> uploadFile(String filePath, String key, String token)
+Future<String> uploadData(Uint8List data, String key, String token)
+```
 
+多文件上传：
+```
+Future<List<String>> uploadFiles(List<FilePathEntity> entities)
+```
