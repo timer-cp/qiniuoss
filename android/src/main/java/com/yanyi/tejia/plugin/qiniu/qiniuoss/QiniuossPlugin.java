@@ -14,6 +14,9 @@ import com.qiniu.android.storage.UploadOptions;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -92,13 +95,13 @@ public class QiniuossPlugin implements FlutterPlugin, MethodCallHandler, EventCh
                 // 服务器响应超时。默认60秒
                 .responseTimeout(60)
                 // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
-                .zone(getZone(zoneRaw))
+//                .zone(getZone(zoneRaw))
                 .build();
 
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象
         UploadManager uploadManager = new UploadManager(config);
-
-        UploadOptions options = new UploadOptions(null, null, false, new UpProgressHandler() {
+        Map<String, String> params = new HashMap<>();
+        UploadOptions options = new UploadOptions(params, null, false, new UpProgressHandler() {
             @Override
             public void progress(String key, double percent) {
                 if (eventSink != null) {
@@ -146,7 +149,7 @@ public class QiniuossPlugin implements FlutterPlugin, MethodCallHandler, EventCh
                 // 服务器响应超时。默认60秒
                 .responseTimeout(60)
                 // 设置区域，指定不同区域的上传域名、备用域名、备用IP。
-                .zone(getZone(zoneRaw))
+//                .zone(getZone(zoneRaw))
                 .build();
 
         // 重用uploadManager。一般地，只需要创建一个uploadManager对象
